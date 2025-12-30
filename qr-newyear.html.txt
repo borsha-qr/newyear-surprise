@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>New Year Surprise</title>
+<style>
+body{
+ margin:0;
+ background:black;
+ overflow:hidden;
+ font-family:Arial;
+ text-align:center;
+ color:white;
+}
+#qr{
+ position:absolute;
+ top:30%;
+ width:100%;
+ font-size:28px;
+}
+#scanLine{
+ width:220px;
+ height:4px;
+ background:lime;
+ margin:10px auto;
+ animation: scan 1s infinite;
+}
+@keyframes scan{
+ 0%{transform:translateY(0);}
+ 100%{transform:translateY(200px);}
+}
+#main{display:none;}
+h1{
+ font-size:60px;
+ animation: glow 2s infinite alternate;
+}
+h2{
+ color:pink;
+ font-size:40px;
+}
+@keyframes glow{
+ from{text-shadow:0 0 10px red;}
+ to{text-shadow:0 0 30px pink;}
+}
+canvas{display:block;}
+</style>
+</head>
+
+<body>
+
+<!-- QR SCREEN -->
+<div id="qr">
+ <b>Scan Me ❤️</b><br><br>
+ <div style="width:220px;height:220px;border:4px solid white;margin:auto;"></div>
+ <div id="scanLine"></div>
+ <p>Scanning...</p>
+</div>
+
+<!-- MAIN SURPRISE -->
+<div id="main">
+ <h1>🎆 Happy New Year 2026 🎆</h1>
+ <h2>❤️ For Raju ❤️</h2>
+ <canvas id="c"></canvas>
+</div>
+
+<script>
+setTimeout(()=>{
+ document.getElementById("qr").style.display="none";
+ document.getElementById("main").style.display="block";
+},4000);
+
+const c=document.getElementById("c");
+const x=c.getContext("2d");
+c.width=innerWidth;
+c.height=innerHeight;
+
+let hearts=[];
+function H(){
+ this.x=Math.random()*c.width;
+ this.y=c.height;
+ this.s=Math.random()*20+10;
+ this.v=Math.random()*2+1;
+}
+function draw(h){
+ x.beginPath();
+ x.moveTo(h.x,h.y);
+ x.bezierCurveTo(h.x-h.s,h.y-h.s,h.x-h.s*2,h.y+h.s,h.x,h.y+h.s*2);
+ x.bezierCurveTo(h.x+h.s*2,h.y+h.s,h.x+h.s,h.y-h.s,h.x,h.y);
+ x.fillStyle="pink";
+ x.fill();
+}
+function anim(){
+ x.clearRect(0,0,c.width,c.height);
+ hearts.forEach((h,i)=>{
+  draw(h); h.y-=h.v;
+  if(h.y<0) hearts.splice(i,1);
+ });
+ requestAnimationFrame(anim);
+}
+setInterval(()=>hearts.push(new H()),200);
+anim();
+</script>
+
+</body>
+</html>
